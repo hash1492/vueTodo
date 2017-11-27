@@ -16,7 +16,7 @@
 <script>
 import * as firebase from '../firebase/config'
 // collections
-let todos = firebase.todosCollection
+let todosCollection = firebase.todosCollection
 
 export default {
   name: 'todos',
@@ -31,24 +31,9 @@ export default {
   },
   created: function () {
     var self = this
-    console.log('created called')
-
-    // This is for normal query of data without live sync
-    // todos.get()
-    // .then(function (querySnapshot) {
-    //   querySnapshot.forEach(function (doc) {
-    //     self.todos.push(doc.data())
-    //     console.log(doc.data())
-    //   })
-    // })
-
-    // This is for live sync
-    todos.onSnapshot(function (querySnapshot) {
-      console.log('onSnapshot called')
-      console.log(querySnapshot)
+    todosCollection.onSnapshot(function (querySnapshot) {
       self.todos = []
       querySnapshot.forEach(function (doc) {
-        console.log(doc)
         var todo = {
           name: doc.data().name,
           completed: doc.data().completed,
@@ -56,21 +41,15 @@ export default {
         }
         self.todos.push(todo)
       })
-      console.log(self.todos)
     })
   },
   methods: {
     addTodo: function () {
-      console.log('addTodo called')
       if (!this.todo.name) {
         return
       }
-      // this.todos.push(Object.assign({}, this.todo))
-      // this.todo.name = ''
       var self = this
-      // this.todo.id = uuidv4()
-      console.log(this.todo)
-      todos.add(Object.assign({}, this.todo))
+      todosCollection.add(this.todo)
       .then(function (docRef) {
         console.log('Document written with ID: ', docRef.id)
         self.todo.name = ''
@@ -80,7 +59,7 @@ export default {
       })
     },
     updateTodo: function (todo) {
-      todos.doc(todo.id)
+      todosCollection.doc(todo.id)
       .update({completed: todo.completed})
       .then(function () {
         console.log('Document successfully updated!')
@@ -91,11 +70,7 @@ export default {
       })
     },
     deleteTodo: function (id) {
-      console.log('delete called')
-      console.log(id)
-      // this.todos.splice(index, 1)
-      console.log(id)
-      todos.doc(id).delete().then(function () {
+      todosCollection.doc(id).delete().then(function () {
         console.log('Document successfully deleted!')
       }).catch(function (error) {
         console.error('Error removing document: ', error)
