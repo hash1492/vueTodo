@@ -10,4 +10,5 @@ const config = {
   messagingSenderId: '434185844841'
 }
 export const app = firebase.initializeApp(config)
+export const firebaseAuth = firebase.auth()
 export const todosCollection = firebase.firestore().collection('todos')

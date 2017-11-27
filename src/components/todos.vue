@@ -1,5 +1,6 @@
 <template>
   <div>
+    <button type="button" name="button" v-on:click="logout">Logout</button>
     <input type="text" class="new-todo" v-on:keyup.enter='addTodo' v-model="todo.name" placeholder="Enter a todo..." value="">
     <button type="button" name="button" v-on:click="addTodo()">+</button>
     <hr>
@@ -17,6 +18,7 @@
 import * as firebase from '../firebase/config'
 // collections
 let todosCollection = firebase.todosCollection
+let firebaseAuth = firebase.firebaseAuth
 
 export default {
   name: 'todos',
@@ -74,6 +76,18 @@ export default {
         console.log('Document successfully deleted!')
       }).catch(function (error) {
         console.error('Error removing document: ', error)
+      })
+    },
+    logout: function () {
+      console.log('logout clicked!')
+      var self = this
+      firebaseAuth.signOut().then(function (response) {
+        console.log(response)
+        // Sign-out successful.
+        self.$router.push({name: 'login'})
+      }).catch(function (err) {
+        console.log(err)
+        // An error happened.
       })
     }
   }
